@@ -103,4 +103,4 @@ http-response ^https?:\/\/playclient\.douyucdn\.cn script-path = douyu_minimal.j
 # msg.douyu.com 弹幕消息 - 放行
 
 [MITM]
-hostname = *.douyucdn.cn, *.qq.com, *.weibo.com, *.geetest.com, *.huya.com, *.hpplay.cn, *.alicdn.com, *.douyu.com
+hostname = *.douyucdn.cn
