@@ -1,0 +1,106 @@
+#!name = 斗鱼精简净化
+#!desc = 斗鱼直播间精简模式 — 只保留弹幕和视频，屏蔽礼物、活动、广告、统计、打点、P2P、第三方SDK等所有干扰项
+#!author = Minis
+#!homepage = 
+#!icon = https://sta-op.douyucdn.cn/front-publish/fed-ci-static-bed-online/douyu.ico
+#!system = iOS,iPadOS,macOS
+#!system_version = 15
+#!loon_version = 3.2.1(372)
+#!tag = 去广告,斗鱼,直播净化
+#!type = parser
+
+[Argument]
+arg1 = switch,true,tag=保留视频画面,desc=关闭后仅保留弹幕数据，不加载视频流（纯聊天模式）
+arg2 = switch,false,tag=保留礼物系统,desc=开启后恢复礼物、道具商城、红包功能
+arg3 = switch,false,tag=保留活动互动,desc=开启后恢复投票、竞猜、抽奖等互动玩法
+arg4 = switch,false,tag=保留统计上报,desc=开启后允许打点、AB测试、错误日志上报
+
+[General]
+bypass-tun =
+skip-proxy =
+real-ip =
+dns-server =
+
+[Rule]
+# ========== 广告 & 推送 ==========
+URL-REGEX ^https?:\/\/rtbapi\.douyucdn\.cn REJECT
+
+# ========== 统计 & 打点 & 日志 ==========
+URL-REGEX ^https?:\/\/(dotserver|dotab|dotbeats|dotcounter|p2perrorlog|p2plog|streamdot)\.douyucdn\.cn REJECT
+
+# ========== 第三方SDK ==========
+URL-REGEX ^https?:\/\/(pro\.bugly|wetype|gatherer|tdid)\.qq\.com REJECT
+URL-REGEX ^https?:\/\/rdelivery\.qq\.com REJECT
+URL-REGEX ^https?:\/\/(onepass\.geetest|api\.weibo|wss\.tim|ssdkauth\.hpplay|userlink\.alicdn)\. REJECT
+URL-REGEX ^https?:\/\/(cdnws\.api\.huya|ded35397-ws\.va\.huya)\. REJECT
+URL-REGEX ^https?:\/\/mapi-yuba\.douyu\.com REJECT
+
+# ========== 热更新 / 动态配置 ==========
+URL-REGEX ^https?:\/\/venus\.douyucdn\.cn REJECT
+URL-REGEX ^https?:\/\/tower\.douyucdn\.cn REJECT
+URL-REGEX ^https?:\/\/accplay\.douyucdn\.cn REJECT
+URL-REGEX ^https?:\/\/capi\.douyucdn\.cn REJECT
+
+# ========== 分析 & 火山引擎 ==========
+URL-REGEX ^https?:\/\/abvolcapi\.douyucdn\.cn REJECT
+URL-REGEX ^https?:\/\/lts-access\.cn-north-4\.myhuaweicloud\.com REJECT
+
+# ========== 连麦 & 其他 ==========
+URL-REGEX ^https?:\/\/linkmicschedule\.douyucdn\.cn REJECT
+
+# ========== P2P相关 ==========
+URL-REGEX ^https?:\/\/sdkapi\.douyucdn\.cn REJECT
+URL-REGEX ^https?:\/\/p2perrorlog\.douyucdn\.cn REJECT
+URL-REGEX ^https?:\/\/p2plog\.douyucdn\.cn REJECT
+
+[URL Rewrite]
+# ========== 礼物系统 (完整屏蔽) ==========
+^https?:\/\/gift\.douyucdn\.cn .* reject-200
+^https?:\/\/gfs-op\.douyucdn\.cn .* reject-200
+^https?:\/\/apiv2\.douyucdn\.cn\/(japi\/livebiznc\/app\/(giftnote|anchorstardiscover)|japi\/propmall|japi\/reward) reject-200
+^https?:\/\/www\.douyu\.com\/japi\/propmall reject-200
+
+# ========== 互动 & 活动 (完整屏蔽) ==========
+^https?:\/\/apiv2\.douyucdn\.cn\/(japi\/interact\/(cdn\/(anchorSupportPlan|dFansbadge|fantasyIsLand|entrance)|comm|fxtz|polling|quiz)|mgapi\/(livenc\/match|ord\/liveassistant|augmentedlive|activitync)) reject-200
+^https?:\/\/apiv2\.douyucdn\.cn\/(lapi\/interact|lapi\/interact\/fxtz|lapi\/interact\/polling|lapi\/interact\/quiz) reject-200
+^https?:\/\/apiv2\.douyucdn\.cn\/(mgapi\/activitync) reject-200
+^https?:\/\/apiv3\.douyucdn\.cn\/(mgapi\/live\/anchorecology|japi\/ecl|mgapi\/livenc\/asubscribe) reject-200
+^https?:\/\/apiv2\.douyucdn\.cn\/(live\/fansbadge|japi\/entrance\/roomRes) reject-200
+^https?:\/\/apiv2\.douyucdn\.cn\/(room\/biz-api|room\/switch) reject-200
+^https?:\/\/www\.douyu\.com\/(mgapi|wgapi) reject-200
+
+# ========== 配置下发 (屏蔽非必要配置) ==========
+^https?:\/\/mconf\.douyucdn\.cn\/resource\/(common\/(gift|rand_gift|assemble_gift|interact|activity|carnival|magicAwaken|happy_game|racing|quantum|creation|comm_broadcast|inter_h5_game|interact_login|room_vip|dfans|superfans|aiAvatar|profess_gift|spring_redpacket|fantasy|fish_ball|predpacket|sweet_heart|talent_show|luckybox|actfans|acttask|actqzs|actsuperfans|act202411godgift|config\/(inter_com_m_ad_gift|inter_com_m_recharge_back|inter_com_m_random_gift|inter_com_m_room_ship_task|inter_com_m_profess_gift|inter_com_m_sweet_heart|inter_com_m_luckybox_service|inter_com_m_talent_show|inter_com_m_spring_redpacket|inter_com_m_magical_sea|dfans_act_m|dfansAiGift))) reject-200
+^https?:\/\/mconf\.douyucdn\.cn\/resource\/(m\/ad|newuser|venus|carnival) reject-200
+^https?:\/\/mconf\.douyucdn\.cn\/resource\/(common\/(mobile|growth_level|gift_activity)) reject-200
+
+# ========== 房间皮肤 & 装饰 ==========
+^https?:\/\/apiv3\.douyucdn\.cn\/mgapi\/ord\/room\/skin reject-200
+
+# ========== 推荐 & 搜索 & 首页 ==========
+^https?:\/\/apiv2\.douyucdn\.cn\/mgapi\/livenc\/(home|match) reject-200
+^https?:\/\/apiv3\.douyucdn\.cn\/mgapi\/livenc\/(mhome|mcenter) reject-200
+
+# ========== 用户等级 & 身份 ==========
+^https?:\/\/apiv2\.douyucdn\.cn\/(japi\/growth|japi\/revenuenc) reject-200
+^https?:\/\/apiv3\.douyucdn\.cn\/(mgapi\/ord\/room|mgapi\/livenc\/mhome) reject-200
+
+# ========== 认证 & 微博 ==========
+^https?:\/\/api\.weibo\.com reject-200
+^https?:\/\/apiv2\.douyucdn\.cn\/livenc\/accountVerify reject-200
+
+[Script]
+# 直播间核心信息 - 精简响应，只保留必要的房间状态
+http-response ^https?:\/\/apiv3\.douyucdn\.cn\/mgapi\/live\/mroom script-path = douyu_minimal.js, requires-body = true, tag = 精简房间信息, argument = {}
+
+# 直播间次要信息 - 返回空
+http-response ^https?:\/\/apiv3\.douyucdn\.cn\/mgapi\/live\/mroom\/(secondaryInfo|getRoomLoopInfo) script-path = douyu_minimal.js, requires-body = true, tag = 精简房间次要信息, argument = {}
+
+# 视频流配置 - 保留，仅作兼容处理
+http-response ^https?:\/\/playclient\.douyucdn\.cn script-path = douyu_minimal.js, requires-body = true, tag = 视频流, argument = {}
+
+# 弹幕心跳 - 放行，不做处理
+# msg.douyu.com 弹幕消息 - 放行
+
+[MITM]
+hostname = *.douyucdn.cn, *.qq.com, *.weibo.com, *.geetest.com, *.huya.com, *.hpplay.cn, *.alicdn.com, *.douyu.com
